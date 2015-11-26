@@ -18,8 +18,6 @@ sqlite.prototype.connect = function(db,password){
 	this.file = db;
 	this.password = password || this.password;
 	if(fs.existsSync(db)){
-		// var filebuffer = fs.readFileSync(db);
-		// buffer = filebuffer;
 		var file = fs.readFileSync(db);
 		var filebuffer = decrypt(file, this.password);
 		try{
@@ -29,14 +27,8 @@ sqlite.prototype.connect = function(db,password){
 			throw x;
 		}
 	}else{
-
-		var name = Math.random().toString(36).substring(8) + ".db";
-		var file = path.join(__dirname, name)
-		child_process.execSync('sqlite3.exe '+file+' " "',{cwd: __dirname});
-
-		var filebuffer = fs.readFileSync(file);
 		try{
-			var connection = new SQL.Database(filebuffer);	
+			var connection = new SQL.Database();	
 			this.db = connection;
 			this.write();
 		}catch(x){
@@ -190,9 +182,31 @@ sqlite.prototype.write = function(){
 	var data = encrypt(new Buffer(db, "utf-8"), this.password);
 	var buffer = new Buffer(data);
 	fs.writeFileSync(this.file, buffer);
-	// var buffer = new Buffer(data);
-	// fs.writeFileSync(this.file, buffer);
 	return this;
+}
+
+sqlite.prototype.encrypt = function(from, to, password){
+	if(fs.existsSync(from)){
+		var db = fs.readFileSync(from);
+		var data = encrypt(new Buffer(db,"utf-8"), password);
+		var buffer = new Buffer(data);
+		fs.writeFileSync(to, buffer);
+	}else{
+		throw "File is not found!";
+	}
+	return this;
+}
+
+sqlite.prototype.decrypt = function(from, to, password){
+	if(fs.existsSync(from)){
+		var file = fs.readFileSync(from);
+		var data = decrypt(file, password);
+		var buffer = new Buffer(data);
+		fs.writeFileSync(to, buffer);
+	}else{
+		throw "File is not found!";
+	}
+	return this;	
 }
 
 function encrypt(buffer,password){

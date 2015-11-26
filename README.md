@@ -1,8 +1,10 @@
 # sqlite-cipher.js
+
 Module to handle encrypted sqlite databases
 
 <img src="https://github.com/JayrAlencar/sqlite-cipher.js/blob/master/images/logo.png?raw=true"/>
-
+</br>
+[![NPM](https://nodei.co/npm/sqlite-cipher.png?downloads=true&downloadRank=true)](https://nodei.co/npm/sqlite-cipher/)
 ## Install
 To install this module open your prompt or terminal and run:
 </br>

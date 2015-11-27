@@ -1,10 +1,8 @@
-# sqlite-cipher.js
-
-Module to handle encrypted sqlite databases
-
 <img src="https://github.com/JayrAlencar/sqlite-cipher.js/blob/master/images/logo.png?raw=true"/>
 </br>
 [![NPM](https://nodei.co/npm/sqlite-cipher.png?downloads=true&downloadRank=true)](https://nodei.co/npm/sqlite-cipher/)
+</br>
+Module to handle encrypted sqlite databases
 ## Install
 To install this module open your prompt or terminal and run:
 </br>
@@ -52,3 +50,7 @@ Decrypting an database.
 # Using SQL
 This module is it´s similar to <a href="https://github.com/JayrAlencar/sqlite-sync.js">sqlite-sync.js</a>
 ### See more <a href="https://github.com/JayrAlencar/sqlite-sync.js/wiki">HERE</a>
+
+# Tutorials
+English > <a href="http://jayralencar.com.br/create-database-sqlite-encrypted-with-node-js/">Create database sqlite encrypted with node.js</a></br>
+Português > <a href="http://clubedosgeeks.com.br/banco-de-dados/banco-de-dados-sqlite-criptografado-em-node-js">Banco de Dados sqlite criptografado em node.js</a>

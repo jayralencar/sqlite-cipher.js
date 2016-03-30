@@ -32,3 +32,8 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+#Database test
+test/Database.enc
+test/decrypted.db
+test/reencrypted.rec

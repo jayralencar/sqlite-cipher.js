@@ -35,5 +35,6 @@ jspm_packages
 
 #Database test
 test/Database.enc
+test/Database.rec
 test/decrypted.db
 test/reencrypted.rec

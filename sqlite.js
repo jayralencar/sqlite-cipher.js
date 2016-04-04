@@ -35,6 +35,7 @@ sqlite.prototype.file2 = null;
 sqlite.prototype.password = 'clubeDosGeeks';
 sqlite.prototype.algorithm = 'aes-256-ctr';
 sqlite.prototype.algorithms = crypto.getCiphers();
+sqlite.prototype.iv = null;
 
 /**
    * Buffer decryption
@@ -43,9 +44,13 @@ sqlite.prototype.algorithms = crypto.getCiphers();
    * @return {Object} - Decrypted buffer
  */
 sqlite.prototype.pvDecrypt = function(buffer){
-  var decipher = crypto.createDecipher(this.algorithm,this.password)
-  var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
-  return dec;
+	if(this.iv){
+		var decipher = crypto.createDecipher(this.algorithm,this.password,{iv:this.iv});
+	}else{
+		var decipher = crypto.createDecipher(this.algorithm,this.password);
+	}
+  	var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
+  	return dec;
 }
 
 /**
@@ -55,9 +60,13 @@ sqlite.prototype.pvDecrypt = function(buffer){
    * @return {Object} - Encrypted buffer
  */
 sqlite.prototype.pvEncrypt = function(buffer){
-  var cipher = crypto.createCipher(this.algorithm,this.password)
-  var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
-  return crypted;
+	if(this.iv){
+		var cipher = crypto.createCipher(this.algorithm,this.password, {iv: this.iv});
+	}else{
+		var cipher = crypto.createCipher(this.algorithm,this.password);
+	}
+  	var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
+  	return crypted;
 }
 
 /**
@@ -109,8 +118,13 @@ sqlite.prototype.writer = function(buffer){
    * @param {String} algorithm
    * @return {Object}
  */
-sqlite.prototype.decrypt = function(from, to, password, algorithm){
+sqlite.prototype.decrypt = function(from, to, password, algorithm, options){
 	if(fs.existsSync(from)){
+		if(options){
+			if(options.iv){
+				this.iv = options.iv;
+			}
+		}
 		this.algorithm = algorithm || this.algorithm;
 		this.password = password || this.password;
 		if(this.algorithms.indexOf(this.algorithm)==-1){
@@ -135,8 +149,13 @@ sqlite.prototype.decrypt = function(from, to, password, algorithm){
    * @param {String} algorithm
    * @return {Object}
  */
-sqlite.prototype.encrypt = function(from, to, password, algorithm){
+sqlite.prototype.encrypt = function(from, to, password, algorithm, options){
 	if(fs.existsSync(from)){
+		if(options){
+			if(options.iv){
+				this.iv = options.iv;
+			}
+		}
 		this.algorithm = algorithm || this.algorithm;
 		this.password = password || this.password;
 		if(this.algorithms.indexOf(this.algorithm)==-1){

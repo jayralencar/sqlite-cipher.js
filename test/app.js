@@ -4,9 +4,13 @@ var sqlite = require('../sqlite.js'); //requiring
 sqlite.iv = '13ewr3iJ';
 
 //Connecting - (databaseFile, [password], [algorithm])
-sqlite.connect('test/Database.rec','myPass','aes-256-ctr');
+try{
+	sqlite.connect('test/Database.rec','myPass','aes-256-ctr');
+}catch(x){
+	console.log(x)
+}
 
-//Creating Table - you can run any command
+// Creating Table - you can run any command
 sqlite.run("CREATE TABLE COMPANYS(ID  INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT NOT NULL);");
 
 //Inserting - this function can be sync to, look the wiki

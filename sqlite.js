@@ -95,6 +95,12 @@ sqlite.prototype.connect = function(db, password, algorithm){
 		this.con(1);
 	}
 
+	try{
+		this.run("SELECT name FROM sqlite_master WHERE type = 'table'");
+	}catch(e){
+		throw "Invalid Password! Please check your password or database name.";
+	}
+
 	return this;	
 }
 

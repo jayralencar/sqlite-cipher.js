@@ -95,10 +95,11 @@ sqlite.prototype.connect = function(db, password, algorithm){
 		this.con(1);
 	}
 
-	try{
-		this.run("SELECT name FROM sqlite_master WHERE type = 'table'");
-	}catch(e){
+	var res = this.run("CREATE TABLE jayr(name TEXT)");
+	if(res.error){
 		throw "Invalid Password! Please check your password or database name.";
+	}else{
+		this.run("DROP TABLE jayr")
 	}
 
 	return this;	

@@ -63,11 +63,13 @@ sqlite.prototype.pvDecrypt = function(buffer, algorithm, password){
    * @param {Object} buffer - buffer
    * @return {Object} - Encrypted buffer
  */
-sqlite.prototype.pvEncrypt = function(buffer){
+sqlite.prototype.pvEncrypt = function(buffer, algorithm, password){
+	algorithm = algorithm || this.algorithm;
+	password = password || this.password;
 	if(this.iv){
-		var cipher = crypto.createCipher(this.algorithm,this.password, {iv: this.iv});
+		var cipher = crypto.createCipher(algorithm,password, {iv: this.iv});
 	}else{
-		var cipher = crypto.createCipher(this.algorithm,this.password);
+		var cipher = crypto.createCipher(algorithm,password);
 	}
   	var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
   	return crypted;

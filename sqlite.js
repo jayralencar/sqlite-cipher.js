@@ -41,13 +41,17 @@ sqlite.prototype.iv = null;
    * Buffer decryption
    *
    * @param {Object} buffer - Encrypted buffer
+   * @param {String} algorithm - Algorithm
+   * @param {String} password - Password
    * @return {Object} - Decrypted buffer
  */
-sqlite.prototype.pvDecrypt = function(buffer){
+sqlite.prototype.pvDecrypt = function(buffer, algorithm, password){
+	algorithm = algorithm || this.algorithm;
+	password = password || this.password;
 	if(this.iv){
-		var decipher = crypto.createDecipher(this.algorithm,this.password,{iv:this.iv});
+		var decipher = crypto.createDecipher(algorithm,password,{iv:this.iv});
 	}else{
-		var decipher = crypto.createDecipher(this.algorithm,this.password);
+		var decipher = crypto.createDecipher(algorithm,password);
 	}
   	var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
   	return dec;
@@ -177,6 +181,54 @@ sqlite.prototype.encrypt = function(from, to, password, algorithm, options){
 	}
 	return this;
 }
+
+
+/**
+	* Changing password
+	*
+	* @param {String} file - file path
+	* @param {String} oldPassword - password
+	* @param {String} newPassword - password
+	* @param {String} algorithm - algorithm
+	* @param {String} newAlgorithm - newAlgorithm
+	* @param {Function} callback - callback function
+*/
+
+sqlite.prototype.changePassword = function(file, oldPassword, newPassword, algorithm, newAlgorithm, callback) {
+	if(!file){
+		throw "Please inform a file!";
+	}else{
+		if(fs.existsSync(file)){
+			if(!oldPassword || typeof(oldPassword) != "string"){
+				throw "Please inform your password!";
+			}else if(!newPassword || typeof(newPassword) != "string"){
+				throw "Please inform your new password!";
+			}else{
+				if(typeof(algorithm)!='string'){
+					callback = algorithm;
+					algorithm = this.algorithm;
+				}
+				if(this.algorithms.indexOf(algorithm)==-1){
+					throw "This algorithm is not supported";
+				}else{
+					if(typeof(newAlgorithm)!='string'){
+						callback = newAlgorithm;
+						newAlgorithm = algorithm;
+					}
+					if(this.algorithms.indexOf(newAlgorithm)==-1){
+						throw "Your new algorithm is not supported";
+					}else{
+
+					}
+				}
+			}
+		}else{
+			throw "File is not found!";	
+		}
+	}
+
+
+};
 
 module.exports = new sqlite();
 

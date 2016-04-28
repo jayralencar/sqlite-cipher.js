@@ -1,6 +1,9 @@
 # Change Log
 This change log is started in 0.3.2;
 
+## 0.3.4 (2016-04-28)
+- Using algorithm and password in pvDecrypt
+
 ## 0.3.3 (2016-04-26)
 - Show error if password is invalid - review
 

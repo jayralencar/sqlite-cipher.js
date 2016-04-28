@@ -61,6 +61,8 @@ sqlite.prototype.pvDecrypt = function(buffer, algorithm, password){
    * Buffer encryption
    *
    * @param {Object} buffer - buffer
+   * @param {String} algorithm - Algorithm
+   * @param {String} password - Password
    * @return {Object} - Encrypted buffer
  */
 sqlite.prototype.pvEncrypt = function(buffer, algorithm, password){
@@ -193,10 +195,9 @@ sqlite.prototype.encrypt = function(from, to, password, algorithm, options){
 	* @param {String} newPassword - password
 	* @param {String} algorithm - algorithm
 	* @param {String} newAlgorithm - newAlgorithm
-	* @param {Function} callback - callback function
 */
 
-sqlite.prototype.changePassword = function(file, oldPassword, newPassword, algorithm, newAlgorithm, callback) {
+sqlite.prototype.change = function(file, oldPassword, newPassword, algorithm, newAlgorithm) {
 	if(!file){
 		throw "Please inform a file!";
 	}else{
@@ -220,7 +221,15 @@ sqlite.prototype.changePassword = function(file, oldPassword, newPassword, algor
 					if(this.algorithms.indexOf(newAlgorithm)==-1){
 						throw "Your new algorithm is not supported";
 					}else{
-
+						try{
+							this.connect(file, oldPassword, algorithm);
+							var decrypted = this.pvDecrypt(fs.readFileSync(file), algorithm, oldPassword);
+							var encrypted = this.pvEncrypt(decrypted,newAlgorithm, newPassword);
+							var buffer = new Buffer(encrypted);
+							fs.writeFileSync(file, buffer);
+						}catch(x){
+							throw x;
+						}
 					}
 				}
 			}

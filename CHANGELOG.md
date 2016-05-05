@@ -1,6 +1,9 @@
 # Change Log
 This change log is started in 0.3.2;
 
+## 0.3.5 (2016-05-05)
+- Fixing error in the usage of initializations vector
+
 ## 0.3.4 (2016-04-28)
 - Using algorithm and password in pvDecrypt
 - Using algorithm and password in pvEncrypt

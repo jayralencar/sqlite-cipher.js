@@ -4,11 +4,12 @@ var sqlite = require('../sqlite.js'); //requiring
 // sqlite.change('test/Database.rec','88560848','myPass','aes-256-ctr','camellia-256-cfb1');
 
 // To use initialization vector
-sqlite.iv = '13ewr3iJ';
+sqlite.iv = "1234567890123456";
+var password = "12345678901234567890123456789012";
 
 //Connecting - (databaseFile, [password], [algorithm])
 try{
-	sqlite.connect('test/Database.rec','myPass','camellia-256-cfb1');
+	sqlite.connect('test/Database.rec',password,'aes-256-cbc');
 }catch(x){
 	console.log(x)
 }
@@ -30,16 +31,16 @@ function concat(a,b){
 }
 
 //Add your function to connection
-sqlite.create_function(concat);
+// sqlite.create_function(concat);
 
-// Use your function in the SQL
-console.log(sqlite.run("SELECT ID , concat(ID, NAME) as concat FROM COMPANYS;"));
+// // Use your function in the SQL
+// console.log(sqlite.run("SELECT ID , concat(ID, NAME) as concat FROM COMPANYS;"));
 
-//Decrypting database file
-sqlite.decrypt("test/Database.rec","test/decrypted.db", 'myPass');
+// //Decrypting database file
+// sqlite.decrypt("test/Database.rec","test/decrypted.db", 'myPass');
 
-//Encrypting database file
-sqlite.encrypt("test/decrypted.db","test/reencrypted.rec", 'myPass',"bf",{iv: "ads343ef"});
+// //Encrypting database file
+// sqlite.encrypt("test/decrypted.db","test/reencrypted.rec", 'myPass',"bf",{iv: "ads343ef"});
 
-// Closing connection 
+// // Closing connection 
 sqlite.close();

@@ -49,7 +49,7 @@ sqlite.prototype.pvDecrypt = function(buffer, algorithm, password){
 	algorithm = algorithm || this.algorithm;
 	password = password || this.password;
 	if(this.iv){
-		var decipher = crypto.createDecipher(algorithm,password,{iv:this.iv});
+		var decipher = crypto.createDecipheriv(algorithm,password,this.iv);
 	}else{
 		var decipher = crypto.createDecipher(algorithm,password);
 	}
@@ -69,7 +69,7 @@ sqlite.prototype.pvEncrypt = function(buffer, algorithm, password){
 	algorithm = algorithm || this.algorithm;
 	password = password || this.password;
 	if(this.iv){
-		var cipher = crypto.createCipher(algorithm,password, {iv: this.iv});
+		var cipher = crypto.createCipheriv(algorithm,password, this.iv);
 	}else{
 		var cipher = crypto.createCipher(algorithm,password);
 	}

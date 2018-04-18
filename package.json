@@ -1,7 +1,7 @@
 {
   "name": "sqlite-cipher",
   "description": "Module to handle encrypted sqlite databases. Sync and async ",
-   "readmeFilename": "README.md" ,
+  "readmeFilename": "README.md",
   "keywords": [
     "sqlite",
     "sqlite3",
@@ -22,7 +22,7 @@
     "encrypt",
     "decrypt"
   ],
-  "version": "0.3.5",
+  "version": "0.3.6",
   "author": {
     "name": "Jayr Alencar",
     "email": "jayralencarpereira@gmail.com",
@@ -32,12 +32,13 @@
     "type": "git",
     "url": "git+https://github.com/JayrAlencar/sqlite-cipher.js"
   },
-  "dependencies":{
-    "sqlite-sync":"latest",
-    "crypto-js":"3.1.5"
+  "dependencies": {
+    "sqlite-sync": "latest"
   },
   "license": "MIT",
-  "scripts": { "test": "node test/app.js" },
+  "scripts": {
+    "test": "node test/app.js"
+  },
   "engines": {
     "node": ">=0.8.0"
   },

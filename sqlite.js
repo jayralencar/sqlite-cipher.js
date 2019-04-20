@@ -77,6 +77,46 @@ sqlite.prototype.pvEncrypt = function(buffer, algorithm, password){
   	return crypted;
 }
 
+
+//////////////////////////////
+// From bytestokey.js
+// https://gist.github.com/bnoordhuis/2de2766d3d3a47ebe41aaaec7e8b14df
+
+const { createCipheriv, createHash } = require('crypto');
+
+function sizes(cipher) {
+  for (let nkey = 1, niv = 0;;) {
+    try {
+      createCipheriv(cipher, '.'.repeat(nkey), '.'.repeat(niv));
+      return [nkey, niv];
+    } catch (e) {
+      if (/invalid iv length/i.test(e.message)) niv += 1;
+      else if (/invalid key length/i.test(e.message)) nkey += 1;
+      else throw e;
+    }
+  }
+}
+
+function compute(cipher, passphrase) {
+  let [nkey, niv] = sizes(cipher);
+  for (let key = '', iv = '', p = '';;) {
+    const h = createHash('md5');
+    h.update(p, 'hex');
+    h.update(passphrase);
+    p = h.digest('hex');
+    let n, i = 0;
+    n = Math.min(p.length-i, 2*nkey);
+    nkey -= n/2, key += p.slice(i, i+n), i += n;
+    n = Math.min(p.length-i, 2*niv);
+    niv -= n/2, iv += p.slice(i, i+n), i += n;
+    if (nkey+niv === 0) return [key, iv];
+  }
+}
+
+//////////////////////////////
+// End bytestokey.js
+
+
 /**
    * Database connection
    *
@@ -87,8 +127,12 @@ sqlite.prototype.pvEncrypt = function(buffer, algorithm, password){
  */
 sqlite.prototype.connect = function(db, password, algorithm){
 	this.file2 = db;
-	this.password = password || this.password;
 	this.algorithm = algorithm || this.algorithm;
+	// this.password = password || this.password;
+	const [key, iv] = compute(algorithm, password);
+	this.password = Buffer.from(key, 'hex');
+	this.iv = Buffer.from(iv, 'hex');
+
 	var self = this;
 
 	if(this.algorithms.indexOf(this.algorithm)==-1){
@@ -119,8 +163,8 @@ sqlite.prototype.connect = function(db, password, algorithm){
    * @param {Object} buffer - buffer from sqlite-sync
  */
 sqlite.prototype.writer = function(buffer){
-	var data = this.pvEncrypt(new Buffer(buffer, "utf-8"));
-	var buffer = new Buffer(data);
+	var data = this.pvEncrypt(Buffer.from(buffer, "utf-8"));
+	var buffer = Buffer.from(data);
 	fs.writeFileSync(this.file2, buffer);
 }
 
@@ -147,7 +191,7 @@ sqlite.prototype.decrypt = function(from, to, password, algorithm, options){
 		}
 		var file2 = fs.readFileSync(from);
 		var data = this.pvDecrypt(file2);
-		var buffer = new Buffer(data);
+		var buffer = Buffer.from(data);
 		fs.writeFileSync(to, buffer);
 	}else{
 		throw "File is not found!";
@@ -177,8 +221,8 @@ sqlite.prototype.encrypt = function(from, to, password, algorithm, options){
 			throw "This algorithm is not supported";
 		}
 		var db = fs.readFileSync(from);
-		var data = this.pvEncrypt(new Buffer(db,"utf-8"));
-		var buffer = new Buffer(data);
+		var data = this.pvEncrypt(Buffer.from(db,"utf-8"));
+		var buffer = Buffer.from(data);
 		fs.writeFileSync(to, buffer);
 	}else{
 		throw "File is not found!";
@@ -225,7 +269,7 @@ sqlite.prototype.change = function(file, oldPassword, newPassword, algorithm, ne
 							this.connect(file, oldPassword, algorithm);
 							var decrypted = this.pvDecrypt(fs.readFileSync(file), algorithm, oldPassword);
 							var encrypted = this.pvEncrypt(decrypted,newAlgorithm, newPassword);
-							var buffer = new Buffer(encrypted);
+							var buffer = Buffer.from(encrypted);
 							fs.writeFileSync(file, buffer);
 						}catch(x){
 							throw x;
